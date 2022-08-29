@@ -1,24 +1,58 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+1. Add `rollbar` to `Gemfile`
 
-Things you may want to cover:
+    ```ruby
+    gem 'rollbar'
+    ```
 
-* Ruby version
+2. Run bundle
 
-* System dependencies
+    ```bash
+    bundle install
+    ```
 
-* Configuration
+3. Install `rollbar`
 
-* Database creation
+    ```bash
+    rails generate rollbar
+    ```
 
-* Database initialization
+4. Add the `access_token` to the credentials
 
-* How to run the test suite
+    ```bash
+    EDITOR=vim rails credentials:edit
+    ```
 
-* Services (job queues, cache servers, search engines, etc.)
+    and
 
-* Deployment instructions
+    ```yml
+    # aws:
+    #   access_key_id: 123
+    #   secret_access_key: 345
 
-* ...
+    rollbar:
+      acess_token: your_rollbar_access_token
+    ```
+
+5. Modify rollbar config to use the access token from credentials
+
+    ```ruby
+    # config/initializers/rollbar.rb
+    Rollbar.configure do |config|
+      # ...
+      config.access_token = Rails.application.credentials.dig(:rollbar, :acess_token)
+      # ...
+    end
+    ```
+
+6. Done! Verify using the rake task
+
+    ```bash
+    $ rake rollbar:test
+
+    # Test sending to Rollbar...
+    # Testing rollbar with "rake rollbar:test". If you can see this, it works.
+    ```
+
+    ![Rollbar Dashboard](public/rollbar_dashboard.png)
